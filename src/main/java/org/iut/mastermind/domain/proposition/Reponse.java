@@ -9,18 +9,13 @@ import static java.util.Collections.unmodifiableList;
 public class Reponse {
     private final String motSecret;
     private final List<Lettre> resultat = new ArrayList<>();
-    private int position;
 
     public Reponse(String mot) {
         this.motSecret = mot;
     }
 
-    // on récupère la lettre à la position dans le résultat
     public Lettre lettre(int position) {
-        if(position >= 0 && position < resultat.size()) {
-                return resultat.get(position);
-        }
-        return null;
+        return position >= 0 && position < resultat.size() ? resultat.get(position) : null;
     }
 
     // on construit le résultat en analysant chaque lettre
@@ -71,19 +66,4 @@ public class Reponse {
         return unmodifiableList(resultat);
     }
 
-    // renvoie le statut du caractère
-    private Lettre evaluationCaractere(char carCourant) {
-        long count = motSecret.chars().filter(c -> c == carCourant).count();
-        return count > 0 ? Lettre.NON_PLACEE : Lettre.INCORRECTE;
-    }
-
-    // le caractère est présent dans le mot secret
-    private boolean estPresent(char carCourant) {
-        return motSecret.indexOf(carCourant) != -1;
-    }
-
-    // le caractère est placé dans le mot secret
-    private boolean estPlace(char carCourant) {
-        return motSecret.equals(carCourant);
-    }
 }

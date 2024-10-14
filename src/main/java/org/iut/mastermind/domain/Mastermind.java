@@ -38,36 +38,29 @@ public class Mastermind {
     // si la partie n'est pas une partie en cours, on renvoie une erreur
     // sinon on retourne le resultat du mot proposé
     public ResultatPartie evaluation(Joueur joueur, String motPropose) {
-        Optional<Partie> partieEnCours = partieRepository.getPartieEnregistree(joueur);
-        if (partieEnCours.isEmpty() || partieEnCours.get().isTerminee()) {
-            return ResultatPartie.ERROR;
-        }
-        return calculeResultat(partieEnCours.get(), motPropose);
+        return partieRepository.getPartieEnregistree(joueur)
+                .filter(partie -> !partie.isTerminee())
+                .map(partie -> calculeResultat(partie, motPropose))
+                .orElse(ResultatPartie.ERROR);
     }
+
 
     // on évalue le résultat du mot proposé pour le tour de jeu
     // on met à jour la bd pour la partie
     // on retourne le résulat de la partie
     private ResultatPartie calculeResultat(Partie partie, String motPropose) {
-        if (partie == null) {
-            throw new IllegalArgumentException("Partie must not be null");
-        }
-
         Reponse reponse = partie.tourDeJeu(motPropose);
-
-        boolean isTermine = partie.isTerminee();
+        
         partieRepository.update(partie);
-        return ResultatPartie.create(reponse, isTermine);
+
+        return partie.isTerminee() ? ResultatPartie.error() : ResultatPartie.of(reponse, false);
     }
+
 
     // si la partie en cours est vide, on renvoie false
     // sinon, on évalue si la partie est terminée
     private boolean isJeuEnCours(Optional<Partie> partieEnCours) {
-        if (partieEnCours.isEmpty()) {
-            return false;
-        }
-        else {
-            return !partieEnCours.get().isTerminee();
-        }
+        return partieEnCours.isPresent() && !partieEnCours.get().isTerminee();
     }
+
 }

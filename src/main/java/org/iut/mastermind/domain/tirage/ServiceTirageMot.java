@@ -1,6 +1,5 @@
 package org.iut.mastermind.domain.tirage;
 
-import java.util.List;
 
 public class ServiceTirageMot {
     private final MotsRepository repository;
@@ -14,9 +13,7 @@ public class ServiceTirageMot {
     // retourne le mot à l'indice renvoyé par le service nombre aléatoire
     public String tirageMotAleatoire() {
         int maxIndex = repository.nbMaxMots();
-
         int randomIndex = nbAleatoire.next(maxIndex);
-
         return repository.getMotByIndex(randomIndex);
     }
 }

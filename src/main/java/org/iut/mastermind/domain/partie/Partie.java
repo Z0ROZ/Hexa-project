@@ -1,6 +1,5 @@
 package org.iut.mastermind.domain.partie;
 
-import org.iut.mastermind.domain.proposition.MotSecret;
 import org.iut.mastermind.domain.proposition.Reponse;
 
 public class Partie {
@@ -46,26 +45,18 @@ public class Partie {
     // si toutes les lettres sont correctement placées,
     // on a terminé la partie
     public Reponse tourDeJeu(String motPropose) {
-        if ( this.partieTerminee || this.nbEssais >= NB_ESSAIS_MAX) {
-            return null;
-        }
-
-        this.nbEssais++;
         Reponse reponse = new Reponse(this.motADeviner);
         reponse.compare(motPropose);
+        this.nbEssais++;
 
+        if (reponse.lettresToutesPlacees() || verifieNbEssais()) done();
 
-        if (reponse.lettresToutesPlacees()) {
-            this.partieTerminee = true;
-        }
-        verifieNbEssais();
         return reponse;
     }
     // vérifie que le nombre d'essais max n'est pas atteint
-    private void verifieNbEssais() {
-        if(this.nbEssais >= NB_ESSAIS_MAX) {
-            done();
-        }
+    private boolean verifieNbEssais() {
+        return this.nbEssais >= NB_ESSAIS_MAX;
+
     }
 
     // la partie est-elle terminée
